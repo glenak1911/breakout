@@ -1,20 +1,22 @@
-/* Global Variables */
+/* Global canvas Variables */
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 var x = canvas.width/2;
 var y = canvas.height-30;
 
+/* Global ball variables */
 var dx = 2;
 var dy = -2;
 var ballRadius = 5;
 
+/* Global paddle variables */
 var paddleHeight = 10;
 var paddleWidth = 75;
 var paddleX = (canvas.width-paddleWidth)/2;
-
 var rightPressed = false;
 var leftPressed = false;
 
+/* Global brick variables */
 var bricks = [];
 var brickRowCount = 3;
 var brickColumnCount = 5
@@ -50,6 +52,7 @@ function draw(){
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	drawBall();
 	drawPaddle();
+	collisionDetection();
 	drawBricks();
 
 	if(x + dx > canvas.width-ballRadius || x + dx < ballRadius){
@@ -111,7 +114,7 @@ function buildBricks(){
 	for(c = 0;c<brickColumnCount;c++){
 		bricks[c] = [];
 		for(r = 0;r<brickRowCount;r++){
-			bricks[c][r] = {x:0, y:0};
+			bricks[c][r] = {x:0, y:0, status:1};
 		}
 	}
 }
@@ -119,6 +122,7 @@ function buildBricks(){
 function drawBricks(){
 	for(c=0; c<brickColumnCount; c++) {
 		for(r=0; r<brickRowCount; r++) {
+			if(bricks[c][r].status ==1 ){
 				var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
         var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
 				bricks[c][r].x = brickX;
@@ -128,6 +132,7 @@ function drawBricks(){
 				ctx.fillStyle = "#0095DD";
 				ctx.fill();
 				ctx.closePath();
+			}
 		}
 	}
 }
@@ -136,6 +141,12 @@ function collisionDetection(){
 	for(c = 0;c < brickColumnCount; c++){
 		for(r = 0;r < brickRowCount; r++){
 			var b = bricks[c][r];
+			if(b.status==1){
+			if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                dy = -dy;
+								b.status=0;
+            }
+					}
 		}
 	}
 }
