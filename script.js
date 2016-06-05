@@ -23,17 +23,21 @@ var brickColumnCount = 5
 var brickWidth = 50;
 var brickHeight = 10;
 var brickPadding = 10;
-var brickOffsetTop = 5;
+var brickOffsetTop = 30;
 var brickOffsetLeft = 5;
 var r;
 var c;
 var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
 var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
 
+/* Global score variables */
+var score = 0;
+
 /*Main function that calls the draw method every 10ms */
 function initialize(){
 	document.addEventListener("keydown", keyDownHandler, false);
 	document.addEventListener("keyup", keyUpHandler, false);
+	document.addEventListener("mousemove", mouseMoveHandler, false);
 	buildBricks();
 
 	setInterval(draw, 10);
@@ -52,6 +56,7 @@ function draw(){
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	drawBall();
 	drawPaddle();
+	drawScore();
 	collisionDetection();
 	drawBricks();
 
@@ -82,6 +87,7 @@ function draw(){
 	y+=dy;
 }
 
+/* Draws paddle */
 function drawPaddle(){
 	ctx.beginPath();
 	ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
@@ -90,6 +96,7 @@ function drawPaddle(){
 	ctx.closePath();
 }
 
+/* Handles the opperation if the left or right arrow is pressed */
 function keyDownHandler(e){
 	if(e.keyCode == 39){
 		console.log("Left");
@@ -101,6 +108,7 @@ function keyDownHandler(e){
 	}
 }
 
+/* Handles the operation if the left or right arrow is released */
 function keyUpHandler(e){
 	if(e.keyCode == 39){
 		rightPressed = false;
@@ -110,6 +118,7 @@ function keyUpHandler(e){
 	}
 }
 
+/* Initializes the bricks by placing them in an array and assigns them a status of 1(visible) */
 function buildBricks(){
 	for(c = 0;c<brickColumnCount;c++){
 		bricks[c] = [];
@@ -119,6 +128,7 @@ function buildBricks(){
 	}
 }
 
+/* Draws bricks on the screen by looping through the array and drawing the bricks with a status of 1 */
 function drawBricks(){
 	for(c=0; c<brickColumnCount; c++) {
 		for(r=0; r<brickRowCount; r++) {
@@ -137,6 +147,7 @@ function drawBricks(){
 	}
 }
 
+/* Detects collision and sets status to 0 */
 function collisionDetection(){
 	for(c = 0;c < brickColumnCount; c++){
 		for(r = 0;r < brickRowCount; r++){
@@ -145,8 +156,26 @@ function collisionDetection(){
 			if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
                 dy = -dy;
 								b.status=0;
+								score++;
+								if(score == brickColumnCount*brickRowCount){
+									alert("You Win!");
+									document.location.reload(true);
+								}
             }
 					}
 		}
 	}
+}
+
+function drawScore(){
+	ctx.font = "16px Arial";
+	ctx.fillStyle = "#0095DD";
+	ctx.fillText ("Score: "+score,8,20);
+}
+
+function mouseMoveHandler(e) {
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if(relativeX > 0 && relativeX < canvas.width) {
+        paddleX = relativeX - paddleWidth/2;
+    }
 }
