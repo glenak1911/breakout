@@ -71,7 +71,7 @@ function draw(){
 			dy=-dy;
 		}else{
 			alert("Game Over");
-			document.location.reload(true);
+			window.location.reload(true);
 		}
 	}
 
@@ -159,7 +159,7 @@ function collisionDetection(){
 								score++;
 								if(score == brickColumnCount*brickRowCount){
 									alert("You Win!");
-									document.location.reload(true);
+									window.location.reload(true);
 								}
             }
 					}
