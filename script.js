@@ -71,6 +71,8 @@ function draw(){
 			dy=-dy;
 		}else{
 			alert("Game Over");
+			dx=2;
+			dy=-2;
 			window.location.reload(true);
 		}
 	}
